@@ -150,7 +150,6 @@ def kmeans(data, centroids):
     else:
         kmeans(data,new_centroids)
         return new_centroids
-
     
 test_data = np.array([
     [66.24345364, 57.31053969],
@@ -191,7 +190,7 @@ test_centroids = np.array([
     [75, 50]
 ])
 
-test_centroids = kmeans(test_data, test_centroids)
+test_centroids = np.asarray(kmeans(test_data, test_centroids))
 
 print('c0 =', test_centroids[0])
 print('c1 =', test_centroids[1])
