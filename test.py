@@ -87,7 +87,7 @@ def euclidean_distance(point, centroid):
     """
     return np.sqrt(np.sum((point - centroid)**2))
 
-def calculate_centroid(clusters, centroids):
+def calculate_centroid(clusters):
     """
     Function implementing the new centroids 
 
@@ -100,17 +100,12 @@ def calculate_centroid(clusters, centroids):
     :return 
         a numpy array of the updated centroids 
     """
-    number_centroids = len(centroids)
-    #updated_centroids = np.zeros(shape=(number_centroids,2))
     updated_centroids = []
     
-    count = 0
-    for centroid in centroids:
-        number_points = len(clusters[count])
+    for cluster in clusters:
         # Finding the average point given all points in one cluster
-        calculate_new_centroid = np.sum(clusters[count], axis=0)/number_points # TODO: SE PÅ DENNE
+        calculate_new_centroid = 1.0 * np.mean(cluster, axis=0) 
         updated_centroids.append(calculate_new_centroid)
-        count =+ 1
     return updated_centroids
 
 def kmeans(data, centroids):
@@ -142,7 +137,8 @@ def kmeans(data, centroids):
         clusters[min_dist_index].append(point)
     
     # Recalculate the centroids 
-    new_centroids = calculate_centroid(clusters, centroids)
+    print(clusters)
+    new_centroids = calculate_centroid(clusters)
 
     # Deciding when to stop calulating the new centroids and when not to
     if (np.array_equal(new_centroids,centroids)):
@@ -191,6 +187,8 @@ test_centroids = np.array([
 ])
 
 test_centroids = np.asarray(kmeans(test_data, test_centroids))
+
+print(test_centroids)
 
 print('c0 =', test_centroids[0])
 print('c1 =', test_centroids[1])
