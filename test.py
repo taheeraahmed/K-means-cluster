@@ -138,14 +138,14 @@ def kmeans(data, centroids):
             # Find the distances
             distances.append(euclidean_distance(point, centroid))
         # Placing a point into a cluster given the index of the minimum value
-        clusters[distances.index(min(distances))].append(point)
+        min_dist_index = distances.index(min(distances))
+        clusters[min_dist_index].append(point)
     
     # Recalculate the centroids 
     new_centroids = calculate_centroid(clusters, centroids)
 
     # Deciding when to stop calulating the new centroids and when not to
     if (np.array_equal(new_centroids,centroids)):
-        print('når kommer du hit?')
         return new_centroids
     else:
         kmeans(data,new_centroids)
