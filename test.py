@@ -72,7 +72,7 @@ print('shape (size, dimensions) =', synthetic_data.shape)
 plt.figure()
 plt.scatter(synthetic_data[:, 0], synthetic_data[:, 1], s=3)
 
-def euclidean_distance(point, centroid):
+def euclideanDistance(point, centroid):
     """
     Function implementing the euclidean distance between two points
 
@@ -87,7 +87,7 @@ def euclidean_distance(point, centroid):
     """
     return np.sqrt(np.sum((point - centroid)**2))
 
-def calculate_centroid(clusters):
+def calculateCentroid(clusters):
     """
     Function implementing the new centroids 
 
@@ -131,14 +131,14 @@ def kmeans(data, centroids):
         distances = []
         for centroid in centroids:
             # Find the distances
-            distances.append(euclidean_distance(point, centroid))
+            distances.append(euclideanDistance(point, centroid))
         # Placing a point into a cluster given the index of the minimum value
         min_dist_index = distances.index(min(distances))
         clusters[min_dist_index].append(point)
     
     # Recalculate the centroids 
     print(clusters)
-    new_centroids = calculate_centroid(clusters)
+    new_centroids = calculateCentroid(clusters)
 
     # Deciding when to stop calulating the new centroids and when not to
     if (np.array_equal(new_centroids,centroids)):
@@ -146,53 +146,59 @@ def kmeans(data, centroids):
     else:
         kmeans(data,new_centroids)
         return new_centroids
+
+def calculateDistanceMatrix(data):
+    distance_matrix = np.zeros((len(data), len(data)))
+
+    # Only gets the lower bottom of the distance matrix, which hehe works for this case i guess :3
+    # Stonks saving computing time 
+    for row in range(len(distance_matrix)):
+        for col in range(row):
+            distance_matrix[row,col] = euclideanDistance(data[row], data[col]) 
+
+def calculateSeparation(cluster):
+    return 0
+
+def calculateCohesion(cluster,distance_matrix):
+    return 0
+
+def silhouette_score(data, centroids):
+    """
+    Function implementing the k-means clustering.
     
-test_data = np.array([
-    [66.24345364, 57.31053969],
-    [43.88243586, 39.69929645],
-    [44.71828248, 48.38791398],
-    [39.27031378, 48.07972823],
-    [58.65407629, 55.66884721],
-    [26.98461303, 44.50054366],
-    [67.44811764, 49.13785896],
-    [42.38793099, 45.61070791],
-    [53.19039096, 50.21106873],
-    [47.50629625, 52.91407607],
-    [2.29566576, 20.15837474],
-    [18.01306597, 22.22272531],
-    [16.31113504, 20.1897911 ],
-    [13.51746037, 19.08356051],
-    [16.30599164, 20.30127708],
-    [5.21390499, 24.91134781],
-    [9.13976842, 17.17882756],
-    [3.44961396, 26.64090988],
-    [8.12478344, 36.61861524],
-    [13.71248827, 30.19430912],
-    [74.04082224, 23.0017032 ],
-    [70.56185518, 16.47750154],
-    [71.26420853, 8.57481802],
-    [83.46227301, 16.50657278],
-    [75.25403877, 17.91105767],
-    [71.81502177, 25.86623191],
-    [75.95457742, 28.38983414],
-    [85.50127568, 29.31102081],
-    [75.60079476, 22.85587325],
-    [78.08601555, 28.85141164]
+    :param data
+        data
+    :param centroids
+        centroids
+    :return
+        mean Silhouette Coefficient of all samples
+    """
+    clusters = kmeans(data,centroids)
+    distance_matrix = calculateDistanceMatrix(data)
+
+    for cluster in clusters:
+        for point in cluster:
+            a = calculateCohesion(cluster, distance_matrix)
+            b = calculateSeparation(cluster)
+    # Step 2: For each data point
+    ## a: Calculate cohesion
+    ## b: Calculate separation
+    ## S = (b-a)/max(b-a)
+    score = (b-a)/max(b-a)
+    
+    return score
+
+data = np.array([
+    [1, 2],
+    [2, 2],
+    [3, 2],
+    [5, 1],
+    [3, 0],
+    [2, 4],
+    [4, 2],
 ])
 
-test_centroids = np.array([
-    [25, 50],
-    [50, 50],
-    [75, 50]
-])
+def test(data):
+    distance_matrix = calculateDistanceMatrix(data)
 
-test_centroids = np.asarray(kmeans(test_data, test_centroids))
-
-print(test_centroids)
-
-print('c0 =', test_centroids[0])
-print('c1 =', test_centroids[1])
-print('c2 =', test_centroids[2])
-plot_clusters(test_data, test_centroids)
-    
-    
+test(data)
