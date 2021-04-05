@@ -65,9 +65,6 @@ for c in CLUSTERS:
     for d in range(DIMENSIONS):
         synthetic_data[start:start + c['size'], d] = np.random.normal(c['mean'][d], c['std'][d], (c['size']))
     start += c['size']
-print(synthetic_data)
-
-print('shape (size, dimensions) =', synthetic_data.shape)
 
 plt.figure()
 plt.scatter(synthetic_data[:, 0], synthetic_data[:, 1], s=3)
@@ -137,15 +134,14 @@ def kmeans(data, centroids):
         clusters[min_dist_index].append(point)
     
     # Recalculate the centroids 
-    print(clusters)
     new_centroids = calculateCentroid(clusters)
 
     # Deciding when to stop calulating the new centroids and when not to
     if (np.array_equal(new_centroids,centroids)):
-        return new_centroids
+        return new_centroids,clusters
     else:
-        kmeans(data,new_centroids)
-        return new_centroids
+        kmeans(data,new_centroids)[0]
+        return new_centroids, clusters
 
 def calculateDistanceMatrix(data):
     distance_matrix = np.zeros((len(data), len(data)))
@@ -162,7 +158,7 @@ def calculateSeparation(cluster):
 def calculateCohesion(cluster,distance_matrix):
     return 0
 
-def silhouette_score(data, centroids):
+def silhouette_score(data, clusters):
     """
     Function implementing the k-means clustering.
     
@@ -173,12 +169,12 @@ def silhouette_score(data, centroids):
     :return
         mean Silhouette Coefficient of all samples
     """
-    clusters = kmeans(data,centroids)
     distance_matrix = calculateDistanceMatrix(data)
 
     for cluster in clusters:
         for point in cluster:
             a = calculateCohesion(cluster, distance_matrix)
+            # TODO: hvordan få tak i punktene i clusters
             b = calculateSeparation(cluster)
     # Step 2: For each data point
     ## a: Calculate cohesion
@@ -198,7 +194,15 @@ data = np.array([
     [4, 2],
 ])
 
+centroids = np.array([
+    [1, 2],
+    [2, 2]
+])
+
+clusters = kmeans(data,centroids)[1]
+
 def test(data):
     distance_matrix = calculateDistanceMatrix(data)
 
 test(data)
+
