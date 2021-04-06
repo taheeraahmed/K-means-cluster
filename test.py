@@ -88,12 +88,17 @@ def calculateDistanceMatrix(data):
     return distance_matrix
 
 def calculateSeparation(cluster):
+    """
+    Function implementing the calculation of separation
+    This part will consist of calculating the average distance points in the nearest cluster
+    
+    """
     return 0
 
-def calculateCohesion(cluster,point):
+def calculateCohesion(cluster):
     """
     Function implementing the calculation of cohesion
-    Given a cluster and a point: it should calculate the average distance between all points in the cluster. 
+    Calculate avg distance of points in the nearest cluster, then take the min of all those values
     
     :param cluster
         A np.array of a cluster
@@ -105,12 +110,11 @@ def calculateCohesion(cluster,point):
         a list of mean values of the distance between all the points in the cluster
     """
     distance_matrix = calculateDistanceMatrix(cluster)
-    # Skal regne ut distance fra et punkt til de andre og ta average av det 
-    # Distance er i en matrix 
-    a = []
-    for row in range(len(distance_matrix)):
-        avg = np.mean(distance_matrix[:,row])
-        a.append(avg)
+
+    #Summing all columns in distance matrix given a cluster
+    a = np.sum(distance_matrix, axis=0)
+    # Finding average of all points except the one in the matrix which is zero
+    a = a/(len(a)-1)
     
     return a
 
@@ -125,10 +129,13 @@ def silhouette_score(data, clusters):
     :return
         mean Silhouette Coefficient of all samples
     """
+
+    # List of the average distances from all points given a cluster
+    a_clusters = []
     for cluster in clusters:
-        for point in cluster:
-            a = calculateCohesion(cluster, point)
-            #b = calculateSeparation(cluster)
+        a = calculateCohesion(cluster)
+        a_clusters.append(a)
+        #b = calculateSeparation(cluster)
     # Step 2: For each data point
     ## a: Calculate cohesion
     ## b: Calculate separation
@@ -176,8 +183,10 @@ centroids = np.array([
 ])
 
 # Får ut array med clusterne
-clusters = kmeans(data,centroids)[1]
-
+clusters = [[np.array([1,4]), np.array([2,4]), np.array([2,5])],
+            [np.array([3,4]),np.array([4,1]),np.array([4,3]),np.array([5,1]),np.array([5,2]),np.array([6,1])],
+            [np.array([3,3]),np.array([4,4]),np.array([4,5]),np.array([5,5]),np.array([6,6])],
+            ]
 """ ------- TESTER -------- """
 
 def testDistanceMatrix(data):
