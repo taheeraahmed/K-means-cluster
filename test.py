@@ -94,7 +94,7 @@ def calculateSeparation(point, cluster):
     Given a point which cluster is the nearest
     
     """
-
+    # TODO !! 
     # Find the nearest cluster 
     ## Given a point find the distance between all other points and take the average value of this
     ## Take the average lengths and find the shortest
