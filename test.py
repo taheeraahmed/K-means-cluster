@@ -140,7 +140,7 @@ def kmeans(data, centroids):
     if (np.array_equal(new_centroids,centroids)):
         return new_centroids,clusters
     else:
-        kmeans(data,new_centroids)[0]
+        kmeans(data,new_centroids)
         return new_centroids, clusters
 
 def calculateDistanceMatrix(data):
@@ -174,7 +174,6 @@ def silhouette_score(data, clusters):
     for cluster in clusters:
         for point in cluster:
             a = calculateCohesion(cluster, distance_matrix)
-            # TODO: hvordan få tak i punktene i clusters
             b = calculateSeparation(cluster)
     # Step 2: For each data point
     ## a: Calculate cohesion
@@ -199,10 +198,12 @@ centroids = np.array([
     [2, 2]
 ])
 
-clusters = kmeans(data,centroids)[1]
+# Får ut array med clusterne
+clusters = np.asarray(kmeans(data,centroids)[1])
 
-def test(data):
+""" ------- TESTER -------- """
+
+def testDistanceMatrix(data):
     distance_matrix = calculateDistanceMatrix(data)
-
-test(data)
+testDistanceMatrix(data)
 
