@@ -90,7 +90,7 @@ def calculateDistanceMatrix(data):
 def calculateSeparation(cluster):
     return 0
 
-def calculateCohesion(cluster,distance_matrix,point):
+def calculateCohesion(cluster,point):
     """
     Function implementing the calculation of cohesion
     Given a cluster and a point: it should calculate the average distance between all points in the cluster. 
@@ -102,14 +102,17 @@ def calculateCohesion(cluster,distance_matrix,point):
     :param point
         A point in the cluster
     :return
-        mean value of the distance between all the points in the cluster
+        a list of mean values of the distance between all the points in the cluster
     """
-
+    distance_matrix = calculateDistanceMatrix(cluster)
     # Skal regne ut distance fra et punkt til de andre og ta average av det 
     # Distance er i en matrix 
-
-
-    return 0
+    a = []
+    for row in range(len(distance_matrix)):
+        avg = np.mean(distance_matrix[:,row])
+        a.append(avg)
+    
+    return a
 
 def silhouette_score(data, clusters):
     """
@@ -122,14 +125,9 @@ def silhouette_score(data, clusters):
     :return
         mean Silhouette Coefficient of all samples
     """
-    distance_matrix = calculateDistanceMatrix(data)
-    a = []
-    b = []
-
     for cluster in clusters:
         for point in cluster:
-            a_value = calculateCohesion(cluster, distance_matrix, point)
-            a.append(a_value)
+            a = calculateCohesion(cluster, point)
             #b = calculateSeparation(cluster)
     # Step 2: For each data point
     ## a: Calculate cohesion
