@@ -1,73 +1,4 @@
 import numpy as np
-#%matplotlib inline
-from matplotlib import pyplot as plt
-
-def plot_clusters(data, centroids):
-    """
-    Shows a scatter plot with the data points clustered according to the centroids.
-    """
-    # Assigning the data points to clusters/centroids.
-    clusters = [[] for _ in range(centroids.shape[0])]
-    for i in range(data.shape[0]):
-        distances = np.linalg.norm(data[i] - centroids, axis=1)
-        clusters[np.argmin(distances)].append(data[i])
-
-    # Plotting clusters and centroids.
-    fig, ax = plt.subplots()
-    for c in range(centroids.shape[0]):
-        if len(clusters[c]) > 0:
-            cluster = np.array(clusters[c])
-            ax.scatter(cluster[:, 0], cluster[:, 1], s=7)
-    ax.scatter(centroids[:, 0], centroids[:, 1], marker='x', s=200, c='red')
-
-    # We would like to have some control over the randomly generated data.
-# This is just for development purposes.
-np.random.seed(0)
-
-# Euclidean space.
-DIMENSIONS = 2
-
-# We will generate clusters.
-CLUSTERS = [
-    {
-        'mean': (10, 10),
-        'std': (10, 5),
-        'size': 300
-    },
-    {
-        'mean': (10, 85),
-        'std': (10, 3),
-        'size': 100
-    },
-    {
-        'mean': (50, 50),
-        'std': (6, 6),
-        'size': 200
-    },
-    {
-        'mean': (80, 75),
-        'std': (5, 10),
-        'size': 200
-    },
-    {
-        'mean': (80, 20),
-        'std': (5, 5),
-        'size': 100
-    }
-]
-
-# Initializing the dataset with zeros.
-synthetic_data = np.zeros((np.sum([c['size'] for c in CLUSTERS]), DIMENSIONS))
-
-# Generating the clusters.
-start = 0
-for c in CLUSTERS:
-    for d in range(DIMENSIONS):
-        synthetic_data[start:start + c['size'], d] = np.random.normal(c['mean'][d], c['std'][d], (c['size']))
-    start += c['size']
-
-plt.figure()
-plt.scatter(synthetic_data[:, 0], synthetic_data[:, 1], s=3)
 
 def euclideanDistance(point, centroid):
     """
@@ -155,7 +86,22 @@ def calculateDistanceMatrix(data):
 def calculateSeparation(cluster):
     return 0
 
-def calculateCohesion(cluster,distance_matrix):
+def calculateCohesion(cluster,distance_matrix,point):
+    """
+    Function implementing the calculation of cohesion
+    Given a cluster and a point: it should calculate the average distance between all points in the cluster. 
+    
+    :param cluster
+        A np.array of a cluster
+    :param distance_matrix
+        A matrix with all the distances
+    :param point
+        A point in the cluster
+    :return
+        mean value of the distance between all the points in the cluster
+    """
+
+
     return 0
 
 def silhouette_score(data, clusters):
@@ -170,11 +116,14 @@ def silhouette_score(data, clusters):
         mean Silhouette Coefficient of all samples
     """
     distance_matrix = calculateDistanceMatrix(data)
+    a = []
+    b = []
 
     for cluster in clusters:
         for point in cluster:
-            a = calculateCohesion(cluster, distance_matrix)
-            b = calculateSeparation(cluster)
+            a_value = calculateCohesion(cluster, distance_matrix, point)
+            a.append(a_value)
+            #b = calculateSeparation(cluster)
     # Step 2: For each data point
     ## a: Calculate cohesion
     ## b: Calculate separation
@@ -205,5 +154,9 @@ clusters = np.asarray(kmeans(data,centroids)[1])
 
 def testDistanceMatrix(data):
     distance_matrix = calculateDistanceMatrix(data)
-testDistanceMatrix(data)
+
+def testSilhoutteScore(data,clusters):
+    silhouette = silhouette_score(data,clusters)
+
+testSilhoutteScore(data,clusters)
 
