@@ -87,27 +87,27 @@ def calculateDistanceMatrix(data):
     
     return distance_matrix
 
-def calculateSeparation(point, cluster):
+def calculateSeparation(clusters, point):
     """
     Function implementing the calculation of separation
     This part will consist of calculating the average distance points in the nearest cluster
     Given a point which cluster is the nearest
     
     """
-    # TODO !! 
-    # Find the nearest cluster 
-    ## Given a point find the distance between all other points and take the average value of this
-    ## Take the average lengths and find the shortest
 
-    # Gitt et cluster
+    for cluster in clusters:
+        for points in cluster:
+            if point == points:
+                print(cluster)
+    
     # Finn distansen mellom _alle punkter som ikke er i samme cluster som x_ og x 
     # Finn gjennomsnittet av dette og legg det i en liste 
-    # Finn minimumsverdien av denne listen og returner den
-
+    # Finn minimumsverdien av denne listen 
+    # Vil returnere en liste med b verdiene for alle punktene
 
     return 0
 
-def calculateCohesion(cluster):
+def calculateCohesion(distance_matrix):
     """
     Function implementing the calculation of cohesion
     Calculate avg distance of points in the nearest cluster, then take the min of all those values
@@ -121,13 +121,14 @@ def calculateCohesion(cluster):
     :return
         a list of mean values of the distance between all the points in the cluster
     """
-    distance_matrix = calculateDistanceMatrix(cluster)
+    a = []
+    for row in distance_matrix
+        #Summing all columns in distance matrix given a cluster
+        a = np.sum(distance_matrix, axis=0)
+        # Finding average of all points except the one in the matrix which is zero
+        a = a/(len(a)-1)
 
-    #Summing all columns in distance matrix given a cluster
-    a = np.sum(distance_matrix, axis=0)
-    # Finding average of all points except the one in the matrix which is zero
-    a = a/(len(a)-1)
-    
+
     return a
 
 def silhouette_score(data, clusters):
@@ -143,6 +144,7 @@ def silhouette_score(data, clusters):
     """
     # List of the average distances from all points given a cluster
     a_clusters = []
+    b_point = []
 
     # Creating distance matrix for all of the data 
     distance_matrix = calculateDistanceMatrix(data)
@@ -151,47 +153,31 @@ def silhouette_score(data, clusters):
         a = calculateCohesion(cluster)
         a_clusters.append(a)
 
+    for point in data:
+        b = calculateSeparation(clusters,point)
+        b_point.append(b)
+        
+
 
     score = (b-a)/max(b-a)
     
     return score
 
 data = np.array([
-    [66.24345364, 57.31053969],
-    [43.88243586, 39.69929645],
-    [44.71828248, 48.38791398],
-    [39.27031378, 48.07972823],
-    [58.65407629, 55.66884721],
-    [26.98461303, 44.50054366],
-    [67.44811764, 49.13785896],
-    [42.38793099, 45.61070791],
-    [53.19039096, 50.21106873],
-    [47.50629625, 52.91407607],
-    [2.29566576, 20.15837474],
-    [18.01306597, 22.22272531],
-    [16.31113504, 20.1897911 ],
-    [13.51746037, 19.08356051],
-    [16.30599164, 20.30127708],
-    [5.21390499, 24.91134781],
-    [9.13976842, 17.17882756],
-    [3.44961396, 26.64090988],
-    [8.12478344, 36.61861524],
-    [13.71248827, 30.19430912],
-    [74.04082224, 23.0017032 ],
-    [70.56185518, 16.47750154],
-    [71.26420853, 8.57481802],
-    [83.46227301, 16.50657278],
-    [75.25403877, 17.91105767],
-    [71.81502177, 25.86623191],
-    [75.95457742, 28.38983414],
-    [85.50127568, 29.31102081],
-    [75.60079476, 22.85587325],
-    [78.08601555, 28.85141164]
-])
-centroids = np.array([
-    [25, 50],
-    [50, 50],
-    [75, 50]
+    [1,4],
+    [2,4],
+    [2,5],
+    [3,4],
+    [4,1],
+    [4,3],
+    [5,1],
+    [5,2],
+    [6,1],
+    [3,3],
+    [4,4],
+    [4,5],
+    [5,5],
+    [6,6]
 ])
 
 # Får ut array med clusterne
