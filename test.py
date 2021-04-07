@@ -111,7 +111,6 @@ def calculateSeparation(cluster, clusters):
             avg_dist.append(average(distances))
         shortest_distance_cluster = min(avg_dist)
         b_cluster.append(shortest_distance_cluster)
-
     return b_cluster
 
 def calculateCohesion(cluster):
