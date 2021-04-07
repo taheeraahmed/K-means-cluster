@@ -147,8 +147,9 @@ def silhouette_score(data, clusters):
     :return
         mean Silhouette Coefficient of all samples
     """
-    # List of the average distances from all points given a cluster
+    # List of the average distances from all points in a cluster given a cluster
     a_clusters = []
+    # List of cohesion values for each point given a cluster
     b_clusters = []
 
     # Creating distance matrix for all of the data 
@@ -159,8 +160,6 @@ def silhouette_score(data, clusters):
         a_clusters.append(a)
         b = calculateSeparation(cluster, clusters)
         b_clusters.append(b)
-        
-
 
     score = (b-a)/max(b-a)
     
