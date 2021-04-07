@@ -107,7 +107,7 @@ def calculateSeparation(clusters, point):
 
     return 0
 
-def calculateCohesion(distance_matrix):
+def calculateCohesion(cluster):
     """
     Function implementing the calculation of cohesion
     Calculate avg distance of points in the nearest cluster, then take the min of all those values
@@ -121,14 +121,13 @@ def calculateCohesion(distance_matrix):
     :return
         a list of mean values of the distance between all the points in the cluster
     """
-    a = []
-    for row in distance_matrix
-        #Summing all columns in distance matrix given a cluster
-        a = np.sum(distance_matrix, axis=0)
-        # Finding average of all points except the one in the matrix which is zero
-        a = a/(len(a)-1)
+    distance_matrix = calculateDistanceMatrix(cluster)
 
-
+    #Summing all columns in distance matrix given a cluster
+    a = np.sum(distance_matrix, axis=0)
+    # Finding average of all points except the one in the matrix which is zero
+    a = a/(len(a)-1)
+    
     return a
 
 def silhouette_score(data, clusters):
