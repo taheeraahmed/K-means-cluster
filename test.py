@@ -48,7 +48,6 @@ def kmeans(data, centroids):
     :return
         final centroids
     """
-    # The key of the dictionary will be the centroids, while the items will be the points in the data
     clusters = []
 
     for i in range(len(centroids)): 
@@ -87,25 +86,33 @@ def calculateDistanceMatrix(data):
     
     return distance_matrix
 
-def calculateSeparation(clusters, point):
+def average(lst):
+    return sum(lst) / len(lst)
+
+def calculateSeparation(cluster, clusters):
     """
     Function implementing the calculation of separation
     This part will consist of calculating the average distance points in the nearest cluster
     Given a point which cluster is the nearest
     
     """
+    b_cluster = []
+    temp_clusters = clusters.copy()
+    temp_clusters.remove(cluster)
 
-    for cluster in clusters:
-        for points in cluster:
-            if point == points:
-                print(cluster)
-    
-    # Finn distansen mellom _alle punkter som ikke er i samme cluster som x_ og x 
-    # Finn gjennomsnittet av dette og legg det i en liste 
-    # Finn minimumsverdien av denne listen 
-    # Vil returnere en liste med b verdiene for alle punktene
+    # The implementation of the clusters were done in a fucking stupid way 
+    # Rip spaghetti code 
+    for i in cluster:
+        avg_dist = []
+        for j in temp_clusters:
+            distances = []
+            for point in j:
+                distances.append(euclideanDistance(i,point))
+            avg_dist.append(average(distances))
+        shortest_distance_cluster = min(avg_dist)
+        b_cluster.append(shortest_distance_cluster)
 
-    return 0
+    return b_cluster
 
 def calculateCohesion(cluster):
     """
@@ -143,7 +150,7 @@ def silhouette_score(data, clusters):
     """
     # List of the average distances from all points given a cluster
     a_clusters = []
-    b_point = []
+    b_clusters = []
 
     # Creating distance matrix for all of the data 
     distance_matrix = calculateDistanceMatrix(data)
@@ -151,10 +158,8 @@ def silhouette_score(data, clusters):
     for cluster in clusters:
         a = calculateCohesion(cluster)
         a_clusters.append(a)
-
-    for point in data:
-        b = calculateSeparation(clusters,point)
-        b_point.append(b)
+        b = calculateSeparation(cluster, clusters)
+        b_clusters.append(b)
         
 
 
