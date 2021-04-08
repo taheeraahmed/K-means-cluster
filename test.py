@@ -94,11 +94,24 @@ def calculateSeparation(cluster, clusters):
     Function implementing the calculation of separation
     This part will consist of calculating the average distance points in the nearest cluster
     Given a point which cluster is the nearest
-    
+
+    :param cluster
+        List of a cluster we are looking at + its point
+    :param clusters
+        List with all of the clusters
+    :return b_cluster
+        Returns an array with b-values for points in :param cluster
     """
     b_cluster = []
+
+    # Removing cluster we are looking at from clusters
     temp_clusters = clusters.copy()
-    temp_clusters.remove(cluster)
+    count = 0
+    for temp_cluster in temp_clusters:
+        if np.sum(temp_cluster) == np.sum(cluster):
+            temp_clusters.pop(count)
+        count =+ 1
+
 
     # The implementation of the clusters were done in a fucking stupid way 
     # Rip spaghetti code 
@@ -125,7 +138,7 @@ def calculateCohesion(cluster):
     :param point
         A point in the cluster
     :return
-        a list of mean values of the distance between all the points in the cluster
+        A list of mean values of the distance between all the points in the cluster
     """
     distance_matrix = calculateDistanceMatrix(cluster)
 
@@ -136,7 +149,7 @@ def calculateCohesion(cluster):
     
     return a
 
-def silhouette_score(data, clusters):
+def silhouetteScore(data, clusters):
     """
     Function implementing the k-means clustering.
     
@@ -147,53 +160,63 @@ def silhouette_score(data, clusters):
     :return
         mean Silhouette Coefficient of all samples
     """
-    # List of the average distances from all points in a cluster given a cluster
-    a_clusters = []
-    # List of cohesion values for each point given a cluster
-    b_clusters = []
-
-    # Creating distance matrix for all of the data 
-    distance_matrix = calculateDistanceMatrix(data)
+    # List of all silhouette scores for each point given a cluster
+    silhoutte_scores_cluster = []
 
     for cluster in clusters:
         a = calculateCohesion(cluster)
-        a_clusters.append(a)
         b = calculateSeparation(cluster, clusters)
-        b_clusters.append(b)
+        temp_silhoutte_clusters = []
+        for i in range(len(a)):
+            numerator = b[i]-a[i]
+            denominator = max(a[i],b[i])
+            sil = numerator/denominator
+            temp_silhoutte_clusters.append(sil)
+        silhoutte_scores_cluster.append(average(temp_silhoutte_clusters))
+    silhouette_score = average(silhoutte_scores_cluster)
+    return silhouette_score
 
-    score = (b-a)/max(b-a)
-    
-    return score
 
-data = np.array([
-    [1,4],
-    [2,4],
-    [2,5],
-    [3,4],
-    [4,1],
-    [4,3],
-    [5,1],
-    [5,2],
-    [6,1],
-    [3,3],
-    [4,4],
-    [4,5],
-    [5,5],
-    [6,6]
+""" ------- TESTER -------- """
+test_data = np.array([
+    [66.24345364, 57.31053969],
+    [43.88243586, 39.69929645],
+    [44.71828248, 48.38791398],
+    [39.27031378, 48.07972823],
+    [58.65407629, 55.66884721],
+    [26.98461303, 44.50054366],
+    [67.44811764, 49.13785896],
+    [42.38793099, 45.61070791],
+    [53.19039096, 50.21106873],
+    [47.50629625, 52.91407607],
+    [2.29566576, 20.15837474],
+    [18.01306597, 22.22272531],
+    [16.31113504, 20.1897911 ],
+    [13.51746037, 19.08356051],
+    [16.30599164, 20.30127708],
+    [5.21390499, 24.91134781],
+    [9.13976842, 17.17882756],
+    [3.44961396, 26.64090988],
+    [8.12478344, 36.61861524],
+    [13.71248827, 30.19430912],
+    [74.04082224, 23.0017032 ],
+    [70.56185518, 16.47750154],
+    [71.26420853, 8.57481802],
+    [83.46227301, 16.50657278],
+    [75.25403877, 17.91105767],
+    [71.81502177, 25.86623191],
+    [75.95457742, 28.38983414],
+    [85.50127568, 29.31102081],
+    [75.60079476, 22.85587325],
+    [78.08601555, 28.85141164]
+])
+test_centroids = np.array([
+    [25, 50],
+    [50, 50],
+    [75, 50]
 ])
 
-# Får ut array med clusterne
-clusters = [[np.array([1,4]), np.array([2,4]), np.array([2,5])],
-            [np.array([3,4]),np.array([4,1]),np.array([4,3]),np.array([5,1]),np.array([5,2]),np.array([6,1])],
-            [np.array([3,3]),np.array([4,4]),np.array([4,5]),np.array([5,5]),np.array([6,6])],
-            ]
-""" ------- TESTER -------- """
+test_centroids = np.asarray(kmeans(test_data, test_centroids)[0])
 
-def testDistanceMatrix(data):
-    distance_matrix = calculateDistanceMatrix(data)
-
-def testSilhoutteScore(data,clusters):
-    silhouette = silhouette_score(data,clusters)
-
-testSilhoutteScore(data,clusters)
-
+clusters = kmeans(test_data,test_centroids)[1]
+print(silhouetteScore(test_data, clusters))
